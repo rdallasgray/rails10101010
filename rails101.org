@@ -1,0 +1,59 @@
+- 2004
+- Full-stack MVC framework for web apps
+- Sweet spot is DB-backed, mid-to-large sized apps, sites or services (CRUD)
+- Ideal for greenfield dev
+- Therefore for startups
+- Perhaps less apt for Enterprise
+- Rails API project
+
+- Convention over configuration
+  - DB tables, primary key names, foreign key names, join table names, model names, controller names, helper names, file names, file paths
+    ^^ make a table
+  - column names (_on, _at, _type)
+  - view file names (view.html.erb)
+  - routes (resource_plural[/id][/nested_resource_plural])
+
+- DSLs, declarative style
+  - Look at quick building of a model, explain use of class methods
+
+- Opinionated
+  - REST (everything is a resource -- see Has Many Through)
+    - Resources
+  - CoffeeScript
+  - Bundler
+
+- Built for Agile, used by Agile
+  - Tests created automatically (unit, functional, integration), test harness built in, framework designed for testing
+  - RSpec (TDD)
+  - Cucumber (Cust rep)
+  - Version control with Git built in (standard .gitignore provided, e.g.)
+  - Scaffolding/code generation
+  - Simple, powerful migrations
+  - Interoperates with many other web app dev tools/libs, e.g. Spine
+
+- Weaknesses
+  - DDD (ActiveRecord models coupled to DB tables violating SRP; no real domain layer/persistence layer)
+  - DCI/Concerns ... hmm?
+
+- Ruby and the Cloud
+  - Chef
+  - Vagrant
+  - Fog
+  - Heroku/Engine Yard 
+
+- In the wild:
+  - Basecamp
+  - Twitter (moved queue and some other svcs to Scala)
+  - Shopify
+  - GitHub
+  - Groupon
+  - LivingSocial
+  - Hulu
+  - Yellow Pages
+  - Blinksale
+  - Blurb
+  - Soundcloud
+  - FreeAgent
+  - EmergeAdapt
+
+
