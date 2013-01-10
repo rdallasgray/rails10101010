@@ -1,0 +1,173 @@
+* Rails 10101010
+
+** THE BUG
+   - Present in versions spanning the past 6 years
+   - XML in POST body can be parsed to executable code
+   - Allows execution of arbitrary Ruby code on the server
+   - Not good
+   - Similar vulns exist in widely used PHP, Python and Java libraries and frameworks
+   - Can be solved without upgrading by disabling XML parsing
+   - Not many Rails apps use XML
+** What is Rails?
+*** A Full-stack MVC framework for rapid development of web applications
+**** Sweet spot:
+     + Database-backed mid-to-large apps, sites or services
+     + (CRUD)
+     + Ideal for greenfield development
+     + Therefore often chosen by startups
+**** A quick way to get a CRUD site up
+     - If that's what you want
+**** A serious tool for Agile engineering
+     - Embodies many key Agile concepts
+** A Brief History
+*** Developed by David Heinemeier Hansson
+    - Extracted from Basecamp
+    - V1.0 December 2005
+    - V3.0 August 2010
+      - Incorporated Merb
+      - Emphasis on modularity, extensibility
+    - V4.0 2013
+*** In the wild
+    - Approx 240,000 installs
+    - Basecamp
+    - Twitter (moved queue and some other components to JVM)
+    - Shopify
+    - GitHub
+    - Groupon
+    - LivingSocial
+    - Hulu
+    - Yellow Pages
+    - Blinksale
+    - Blurb
+    - Soundcloud
+    - FreeAgent
+    - EmergeAdapt
+** Key Concepts
+*** Convention over Configuration
+    - Reaction to heavyweight XML config files in Java frameworks
+**** Models
+| Model Name | File Name   | File Path              |
+|------------+-------------+------------------------|
+| Attendee   | attendee.rb | app/models/attendee.rb |
+| Question   | question.rb | app/models/question.rb |
+|            |             |                        |
+**** Database
+| Table Name | Primary Key | Foreign Key | Join Table          |
+|------------+-------------+-------------+---------------------|
+| attendees  | id          | attendee_id | attendees_questions |
+| questions  | id          | question_id | attendees_questions |
+| buses      | id          | bus_id      | buses_sheep         |
+| sheep      | id          | sheep_id    | buses_sheep         |
+|            |             |             |                     |
+**** Controllers, Views
+| Controller Name     | File Path                               | Helper Name      | View Path                             |
+|---------------------+-----------------------------------------+------------------+---------------------------------------|
+| AttendeesController | app/controllers/attendees_controller.rb | attendees_helper | app/views/attendees/index.html.erb    |
+|                     |                                         |                  | app/views/attendees/show.html.erb ... |
+**** Routes/Resources
+| index      | show         | association           |
+|------------+--------------+-----------------------|
+| /attendees | /attendees/1 | attendees/1/questions |
+|            |              |                       |
+**** Etc.
+     - Plugins, extensions, etc. all employ conventions to allow rapid initial development
+     - All conventions can be overridden
+     - Although not necessary painlessly
+*** Opinionated (The Rails Way)
+**** Conventions
+**** Patterns and Practices
+     - MVC (of a sort)
+     - ActiveRecord
+     - DRY (mostly)
+     - YAGNI (e.g. a domain model)
+     - Automated testing
+     - Scaffolding
+**** Early adoption
+     - REST (Rails 2) (controllers scaffolded with 7 actions)
+     - Prototype (Rails 1)
+     - (then jQuery, Rails 3)
+     - CoffeeScript (Rails 3)
+     - SCSS (Rails 3)
+     - Bundler (Rails 3)
+*** Built for Agile
+    - Testing made very easy
+      - tests generated automatically
+      - unit, functional, integration
+      - built-in test harness
+      - designed for testing
+    - RSpec (BDD)
+    - Cucumber (acceptance)
+*** Code Generation
+    - Scaffolding (models, views, controllers, migrations can all be generated automatically)
+    - Ruby class methods generate code at runtime (metaprogramming)
+    - Auto-generated tests
+*** DSLs
+    - Enabled by Ruby class methods
+      + has_many   :questions
+      + belongs_to :attendee
+      + validates  :name, :presence => true
+** Cool stuff
+*** has_many :through
+**** Join tables aren't RESTful
+     - How do we delete a relationship without deleting its members?
+     - Artist
+       has_and_belongs_to_many :exhibitions
+     - Exhibition
+       has_and_belongs_to_many :artists
+       + GET /artists/1/exhibitions
+       + GET /exhibitions/1/artists
+       + DELETE /artists/1/exhibitions
+       + DELETE /exhibitions/1
+**** Model relationships as entities
+     - Artist
+       has_many :showings
+       has_many :exhibitions, :through => :showings
+     - Exhibition
+       has_many :showings
+       has_many :artists, :through => :showings
+       + GET /artists/1/exhibitions
+       + DELETE artists/1/showings
+       + POST showings { artist_id: 1, exhibition_id: 1 }
+*** Polymorphic associations
+**** Proliferation of join tables
+     - Artists have images
+     - Exhibitions have images
+     - artists_images, exhibitions_images, ...
+**** Combine like entities
+     - Artist
+       has_many :images, :as => :subject
+     - Exhibition
+       has_many :images, :as => :subject
+     - Image
+       belongs_to :subject, :polymorphic => true
+     - DB
+       Image: subject_type, subject_id
+** Why Ruby?
+   - Agile scene began experimenting in early 2000s
+     + Perhaps because of similarity to Smalltalk
+     + DHH prompted to try it in 2003, coming from Java/PHP background
+       (quick & dirty/slow & clean)
+     + Quick & clean
+   - Extremely dynamic
+   - All classes open
+   - Create/modify methods at runtime
+   - Execute code in class body
+   - Everything (but everything) is an object -- including classes
+   - Combines classical (Smalltalk) OO with (LISP) FP with (Perl) pragmatism
+** Criticisms
+   - Ruby is slow
+   - Harder if you don't use conventions
+   - Not enterprisey
+   - Not OO enough
+   - Too quick to adopt new technologies
+   - Ruby drama
+** Community
+*** Readymades
+    - Capistrano
+    - Chef
+    - Vagrant
+    - Fog
+    - Heroku/Engine Yard
+*** Rails API Project
+    - Removes view-related components
+    - More powerful than Sinatra/Flask/Express etc.

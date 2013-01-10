@@ -1,0 +1,53 @@
+rails new presentation
+cd presentation
+
+[create attendee]
+rails g scaffold Attendee name:string title:string
+
+[migrate]
+rake db:migrate
+
+[console]
+rails c
+$> Attendee.create name: "Adam", title: "Developer"
+^D
+
+[start server]
+rails s -d
+
+curl -i -H "Accept: application/json" http://0.0.0.0:3000/attendees
+
+[create questions]
+rails g scaffold Question subject:string quality:integer asked:boolean attendee:references
+rake db:migrate
+
+[look at routes]
+rake routes
+open config/routes.rb
+add questions resource to attendees
+
+[look at Attendee]
+open app/models/attendee.rb
+add has_many :questions
+
+[create reservation via POST]
+open AttendeesController
+add:
+    if params[:attendee_id]
+      @question = Attendee.find(params[:attendee_id]).questions.create(params[:question])
+    else 
+      @question = Question.new(params[:question])
+    end
+
+curl -i -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{ "subject": "domain modelling", "quality": 10, "asked": false }' http://0.0.0.0:3000/attendees/1/questions
+
+curl -i -H "Accept: application/json" http://0.0.0.0:3000/attendees/1/questions
+
+[look back at model; explain association methods and validation methods etc.]
+[look back at controller; go over restful actions; make some changes]
+[run rake test; look at test files]
+[look at assets; note use of coffee and scss]
+[look at migrations; add column]
+rails g migration AddAgeToAttendee age:integer
+rake db:migrate
+
